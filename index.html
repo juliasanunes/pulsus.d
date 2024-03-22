@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem de Dispositivos - API da Pulsus</title>
+</head>
+<body>
+    <h1>Listagem de Dispositivos</h1>
+    <button onclick="listarDispositivos()">Listar Dispositivos</button>
+    <div id="listaDispositivos"></div>
+
+    <script>
+        function listarDispositivos() {
+            fetch('/api/proxy')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao listar dispositivos');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    exibirDispositivos(data);
+                })
+                .catch(error => {
+                    console.error('Erro ao listar dispositivos:', error);
+                    document.getElementById('listaDispositivos').innerText = 'Erro ao listar dispositivos';
+                });
+        }
+
+        function exibirDispositivos(dispositivos) {
+            var listaDispositivos = document.getElementById('listaDispositivos');
+            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+
+            // Cria uma lista de dispositivos
+            var ul = document.createElement('ul');
+            dispositivos.forEach(function(dispositivo) {
+                var li = document.createElement('li');
+                li.textContent = 'ID: ' + dispositivo.id + ', Modelo: ' + dispositivo.modelo;
+                ul.appendChild(li);
+            });
+
+            // Adiciona a lista de dispositivos ao elemento HTML
+            listaDispositivos.appendChild(ul);
+        }
+    </script>
+</body>
+</html>
