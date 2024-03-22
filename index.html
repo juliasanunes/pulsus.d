@@ -12,20 +12,34 @@
 
     <script>
         function listarDispositivos() {
-            fetch('/api/proxy.js')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro ao listar dispositivos');
+            // Substitua 'seu_api_token_aqui' pelo seu token de APIS
+            var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de';
+
+            // Constrói a URL para a requisição GET
+            var url = 'https://api.pulsus.mobi/v1/devices?since_id=1&max_id=120&ids=%5B671%2C673%5D&extended_format=true';
+
+            // Cria um objeto XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+
+            // Configura a função de callback para quando a resposta for recebida
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    // Verifica o código de resposta
+                    if (xhr.status === 200) {
+                        // Requisição bem-sucedida, exibe os dispositivos
+                        var response = JSON.parse(xhr.responseText);
+                        exibirDispositivos(response);
+                    } else {
+                        // Exibe uma mensagem de erro em caso de falha
+                        document.getElementById('listaDispositivos').innerText = 'Erro ao listar dispositivos';
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    exibirDispositivos(data);
-                })
-                .catch(error => {
-                    console.error('Erro ao listar dispositivos:', error);
-                    document.getElementById('listaDispositivos').innerText = 'Erro ao listar dispositivos';
-                });
+                }
+            };
+
+            // Abre a conexão e envia a requisição GET
+            xhr.open('GET', url, true);
+            xhr.setRequestHeader('ApiToken', apiToken);
+            xhr.send();
         }
 
         function exibirDispositivos(dispositivos) {
