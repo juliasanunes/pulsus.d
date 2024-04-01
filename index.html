@@ -12,41 +12,39 @@
 
     <script>
         function listarDispositivos() {
-            // Substitua 'seu_api_token_aqui' pelo seu token de APIS
             var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de';
-
-            // Constrói a URL para a requisição GET
+            // URL original da API
             var url = 'https://api.pulsus.mobi/v1/devices?since_id=1&max_id=120&ids=%5B671%2C673%5D&extended_format=true';
 
-            // Cria um objeto XMLHttpRequest
-            var xhr = new XMLHttpRequest();
+            // Utilizando um proxy CORS para contornar o problema de CORS
+            // Certifique-se de verificar a confiabilidade e a segurança de qualquer proxy CORS utilizado.
+            var corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            var proxiedUrl = corsProxy + url;
 
-            // Configura a função de callback para quando a resposta for recebida
+            var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
-                    // Verifica o código de resposta
                     if (xhr.status === 200) {
-                        // Requisição bem-sucedida, exibe os dispositivos
                         var response = JSON.parse(xhr.responseText);
                         exibirDispositivos(response);
                     } else {
-                        // Exibe uma mensagem de erro em caso de falha
                         document.getElementById('listaDispositivos').innerText = 'Erro ao listar dispositivos';
                     }
                 }
             };
 
-            // Abre a conexão e envia a requisição GET
-            xhr.open('GET', url, true);
+            xhr.open('GET', proxiedUrl, true);
+            // A linha abaixo adiciona o token da API ao header da requisição.
+            // É possível que você precise ajustar isso dependendo de como o serviço de proxy lida com headers.
             xhr.setRequestHeader('ApiToken', apiToken);
+            // Alguns proxies podem exigir o uso de headers adicionais para funcionar corretamente.
             xhr.send();
         }
 
         function exibirDispositivos(dispositivos) {
             var listaDispositivos = document.getElementById('listaDispositivos');
-            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+            listaDispositivos.innerHTML = '';
 
-            // Cria uma lista de dispositivos
             var ul = document.createElement('ul');
             dispositivos.forEach(function(dispositivo) {
                 var li = document.createElement('li');
@@ -54,9 +52,9 @@
                 ul.appendChild(li);
             });
 
-            // Adiciona a lista de dispositivos ao elemento HTML
             listaDispositivos.appendChild(ul);
         }
     </script>
 </body>
 </html>
+
