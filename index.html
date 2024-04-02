@@ -54,10 +54,9 @@
             var relationships = data.relationships;
             if (relationships && relationships.location && relationships.location.data) {
                 var locationData = relationships.location.data;
-                var latitude = locationData.attributes.latitude;
-                var longitude = locationData.attributes.longitude;
-                if (latitude && longitude) {
-                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + latitude + ', Longitude: ' + longitude;
+                var locationAttributes = locationData.attributes;
+                if (locationAttributes && locationAttributes.latitude && locationAttributes.longitude) {
+                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationAttributes.latitude + ', Longitude: ' + locationAttributes.longitude;
                 } else {
                     li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude e longitude não disponíveis';
                 }
