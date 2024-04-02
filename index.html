@@ -51,7 +51,7 @@
                 response.data.forEach(function(data) {
                     var li = document.createElement('li');
                     if (data.type === 'signal_strength') {
-                        var signalStrength = data.attributes;
+                        var signalStrength = data.attribute;
                         li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
                     } else if (data.type === 'location') {
                         var location = data.attributes;
@@ -59,6 +59,17 @@
                     } else if (data.type === 'device') {
                         var device = data.attributes;
                         li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
+                    }
+                    // Verifica se há relacionamentos para incluir informações adicionais
+                    if (data.relationships && data.relationships.location && response.included) {
+                        var locationId = data.relationships.location.data.id;
+                        var includedLocation = response.included.find(function(item) {
+                            return item.id == locationId && item.type == 'location';
+                        });
+                        if (includedLocation) {
+                            var locationAttributes = includedLocation.attributes;
+                            li.textContent += ', Localização: Latitude ' + locationAttributes.latitude + ', Longitude ' + locationAttributes.longitude;
+                        }
                     }
                     ul.appendChild(li);
                 });
@@ -79,5 +90,6 @@
     </script>
 </body>
 </html>
+
 
 
