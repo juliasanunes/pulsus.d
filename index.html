@@ -54,7 +54,13 @@
             var relationships = data.relationships;
             if (relationships && relationships.location && relationships.location.data) {
                 var locationData = relationships.location.data;
-                li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationData.latitude + ', Longitude: ' + locationData.longitude;
+                var latitude = locationData.attributes.latitude;
+                var longitude = locationData.attributes.longitude;
+                if (latitude && longitude) {
+                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + latitude + ', Longitude: ' + longitude;
+                } else {
+                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude e longitude não disponíveis';
+                }
             } else {
                 li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Localização não disponível';
             }
@@ -65,6 +71,7 @@
         exibirErro('Nenhum dado disponível.');
     }
 }
+
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
