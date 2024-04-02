@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exemplo de Requisição para API de Força do Sinal</title>
+    <title>Listagem de Dispositivos - API da Pulsus</title>
 </head>
 <body>
-    <h1>Exemplo de Requisição para API de Força do Sinal</h1>
-    <button onclick="buscarDados()">Buscar Dados</button>
-    <div id="dados"></div>
+    <h1>Listagem de Dispositivos</h1>
+    <button onclick="listarDispositivos()">Listar Dispositivos</button>
+    <div id="listaDispositivos"></div>
 
     <script>
-        function buscarDados() {
+        function listarDispositivos() {
             var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Substitua pelo seu token de API válido
+            var proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL do proxy CORS
 
-            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=500&device_id=1'; // Substitua pela URL correta do endpoint
-            var queryParams = '?page=1&per_page=500&device_id=1'; // Substitua os parâmetros conforme necessário
+            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=500&device_id=1'; // Endpoint da API
+            var queryParams = '?page=1&per_page=500&device_id=1'; // Parâmetros da requisição
+
+            var url = proxyUrl + endpoint + queryParams;
 
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
-                        exibirDados(response);
+                        exibirDispositivos(response);
                     } else if (xhr.status === 401) {
                         exibirErro('Erro: Token inválido. Por favor, verifique seu token de API.');
                     } else if (xhr.status === 404) {
@@ -33,32 +36,32 @@
                 }
             };
 
-            xhr.open('GET', endpoint + queryParams, true);
+            xhr.open('GET', url, true);
             xhr.setRequestHeader('ApiToken', apiToken);
             xhr.send();
         }
 
-        function exibirDados(dados) {
-            var divDados = document.getElementById('dados');
-            divDados.innerHTML = ''; // Limpa o conteúdo anterior
+        function exibirDispositivos(dispositivos) {
+            var listaDispositivos = document.getElementById('listaDispositivos');
+            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
             var ul = document.createElement('ul');
-            dados.forEach(function(item) {
+            dispositivos.forEach(function(dispositivo) {
                 var li = document.createElement('li');
-                li.textContent = 'ID do Dispositivo: ' + item.device_id + ', Nível do Sinal: ' + item.signal_strength;
+                li.textContent = 'ID do Dispositivo: ' + dispositivo.device_id + ', Nível do Sinal: ' + dispositivo.signal_strength;
                 ul.appendChild(li);
             });
 
-            divDados.appendChild(ul);
+            listaDispositivos.appendChild(ul);
         }
 
         function exibirErro(mensagem) {
-            var divDados = document.getElementById('dados');
-            divDados.innerHTML = ''; // Limpa o conteúdo anterior
+            var listaDispositivos = document.getElementById('listaDispositivos');
+            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
             var p = document.createElement('p');
             p.textContent = mensagem;
-            divDados.appendChild(p);
+            listaDispositivos.appendChild(p);
         }
     </script>
 </body>
