@@ -44,44 +44,41 @@
     var listaDispositivos = document.getElementById('listaDispositivos');
     listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-    if (Array.isArray(dispositivos)) {
-        if (dispositivos.length > 0) {
-            var ul = document.createElement('ul');
-            dispositivos.forEach(function(dispositivo) {
-                var li = document.createElement('li');
-                if (dispositivo.id !== undefined) {
-                    li.textContent = 'ID do Dispositivo: ' + dispositivo.id + ', Nível do Sinal: ' + dispositivo.signal_strength;
-                } else if (dispositivo.identifier !== undefined) {
-                    li.textContent = 'Identificador do Dispositivo: ' + dispositivo.identifier + ', Nível do Sinal: ' + dispositivo.signal_strength;
-                } else {
-                    li.textContent = 'Dispositivo sem identificador válido.';
-                }
-                ul.appendChild(li);
-            });
-            listaDispositivos.appendChild(ul);
-        } else {
-            var p = document.createElement('p');
-            p.textContent = 'Nenhum dispositivo encontrado.';
-            listaDispositivos.appendChild(p);
-        }
-    } else {
-        // Se a resposta não for um array, apenas exibe o dispositivo diretamente
+    // Verifica se a resposta é um array
+    if (Array.isArray(dispositivos) && dispositivos.length > 0) {
+        var ul = document.createElement('ul');
+        dispositivos.forEach(function(dispositivo) {
+            var li = document.createElement('li');
+            if (dispositivo.id !== undefined) {
+                li.textContent = 'ID do Dispositivo: ' + dispositivo.id + ', Nível do Sinal: ' + (dispositivo.signal_strength !== undefined ? dispositivo.signal_strength : 'Não disponível');
+            } else if (dispositivo.identifier !== undefined) {
+                li.textContent = 'Identificador do Dispositivo: ' + dispositivo.identifier + ', Nível do Sinal: ' + (dispositivo.signal_strength !== undefined ? dispositivo.signal_strength : 'Não disponível');
+            } else {
+                li.textContent = 'Dispositivo sem identificador válido.';
+            }
+            ul.appendChild(li);
+        });
+        listaDispositivos.appendChild(ul);
+    } else if (typeof dispositivos === 'object') { // Verifica se a resposta é um objeto
+        var ul = document.createElement('ul');
         var li = document.createElement('li');
         if (dispositivos.id !== undefined) {
-            li.textContent = 'ID do Dispositivo: ' + dispositivos.id + ', Nível do Sinal: ' + dispositivos.signal_strength;
+            li.textContent = 'ID do Dispositivo: ' + dispositivos.id + ', Nível do Sinal: ' + (dispositivos.signal_strength !== undefined ? dispositivos.signal_strength : 'Não disponível');
         } else if (dispositivos.identifier !== undefined) {
-            li.textContent = 'Identificador do Dispositivo: ' + dispositivos.identifier + ', Nível do Sinal: ' + dispositivos.signal_strength;
+            li.textContent = 'Identificador do Dispositivo: ' + dispositivos.identifier + ', Nível do Sinal: ' + (dispositivos.signal_strength !== undefined ? dispositivos.signal_strength : 'Não disponível');
         } else {
             li.textContent = 'Dispositivo sem identificador válido.';
         }
-        listaDispositivos.appendChild(li);
+        ul.appendChild(li);
+        listaDispositivos.appendChild(ul);
+    } else {
+        var p = document.createElement('p');
+        p.textContent = 'Nenhum dispositivo encontrado.';
+        listaDispositivos.appendChild(p);
     }
+
+
 }
-
-
-
-
-
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
