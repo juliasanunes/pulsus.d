@@ -42,26 +42,29 @@
         }
 
         function exibirDispositivos(response) {
-            var listaDispositivos = document.getElementById('listaDispositivos');
-            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+    var listaDispositivos = document.getElementById('listaDispositivos');
+    listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-            // Verifica se a resposta contém dados sobre os dispositivos
-            if (response && response.data && response.data.length > 0) {
-                var ul = document.createElement('ul');
-                response.data.forEach(function(data) {
-                    var li = document.createElement('li');
-                    var attributes = data.attributes;
-                    var relationships = data.relationships;
-                    var locationData = relationships.location.data;
-                    var deviceId = relationships.device.data.id;
-                    li.textContent = 'ID do Dispositivo: ' + deviceId + ', Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationData.latitude + ', Longitude: ' + locationData.longitude;
-                    ul.appendChild(li);
-                });
-                listaDispositivos.appendChild(ul);
+    // Verifica se a resposta contém dados sobre os dispositivos
+    if (response && response.data && response.data.length > 0) {
+        var ul = document.createElement('ul');
+        response.data.forEach(function(data) {
+            var li = document.createElement('li');
+            var attributes = data.attributes;
+            var relationships = data.relationships;
+            if (relationships && relationships.location && relationships.location.data) {
+                var locationData = relationships.location.data;
+                li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationData.latitude + ', Longitude: ' + locationData.longitude;
             } else {
-                exibirErro('Nenhum dado disponível.');
+                li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Localização não disponível';
             }
-        }
+            ul.appendChild(li);
+        });
+        listaDispositivos.appendChild(ul);
+    } else {
+        exibirErro('Nenhum dado disponível.');
+    }
+}
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
