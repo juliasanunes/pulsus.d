@@ -42,18 +42,24 @@
         }
 
         function exibirDispositivos(dispositivos) {
-            var listaDispositivos = document.getElementById('listaDispositivos');
-            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+    var listaDispositivos = document.getElementById('listaDispositivos');
+    listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-            var ul = document.createElement('ul');
-            dispositivos.forEach(function(dispositivo) {
-                var li = document.createElement('li');
-                li.textContent = 'ID do Dispositivo: ' + dispositivo.device_id + ', Nível do Sinal: ' + dispositivo.signal_strength;
-                ul.appendChild(li);
-            });
+    if (Array.isArray(dispositivos)) {
+        var ul = document.createElement('ul');
+        dispositivos.forEach(function(dispositivo) {
+            var li = document.createElement('li');
+            li.textContent = 'ID do Dispositivo: ' + dispositivo.device_id + ', Nível do Sinal: ' + dispositivo.signal_strength;
+            ul.appendChild(li);
+        });
+        listaDispositivos.appendChild(ul);
+    } else {
+        var p = document.createElement('p');
+        p.textContent = 'Nenhum dispositivo encontrado.';
+        listaDispositivos.appendChild(p);
+    }
+}
 
-            listaDispositivos.appendChild(ul);
-        }
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
