@@ -51,19 +51,11 @@
         response.data.forEach(function(data) {
             var li = document.createElement('li');
             if (data.type === 'signal_strength') {
-                var signalStrength = data.attributes;
+                var signalStrength = data.attributes; // Acessa os atributos do objeto de força do sinal
                 li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
-            } else if (data.type === 'location' && data.relationships && data.relationships.location && data.relationships.location.data) {
-                var location = data.relationships.location.data;
-                // Verifica se os dados de localização estão presentes
-                if (location.attributes && location.attributes.latitude && location.attributes.longitude) {
-                    li.textContent = 'Latitude: ' + location.attributes.latitude + ', Longitude: ' + location.attributes.longitude;
-                } else {
-                    li.textContent = 'Dados de localização indisponíveis';
-                }
-            } else if (data.type === 'device') {
-                var device = data.attributes;
-                li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
+            } else if (data.type === 'location') {
+                var location = data.attributes; // Acessa os atributos do objeto de localização
+                li.textContent = 'Latitude: ' + location.latitude + ', Longitude: ' + location.longitude + ', Acurácia: ' + location.accuracy + ', Data de Registro: ' + location.recorded_at;
             }
             ul.appendChild(li);
         });
@@ -72,6 +64,7 @@
         exibirErro('Nenhum dado disponível.');
     }
 }
+
 
 
         function exibirErro(mensagem) {
