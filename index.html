@@ -12,10 +12,10 @@
 
     <script>
         function listarDispositivos() {
-            var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Seu token de API
+            var apiToken = 'SEU_API_TOKEN_AQUI'; // Seu token de API
             var proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL do proxy CORS
 
-            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=600&device_id'; // Endpoint da API
+            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=600'; // Endpoint da API
 
             var url = proxyUrl + endpoint;
 
@@ -51,7 +51,10 @@
                 response.data.forEach(function(data) {
                     var li = document.createElement('li');
                     var attributes = data.attributes;
-                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength;
+                    var relationships = data.relationships;
+                    var locationData = relationships.location.data;
+                    var deviceId = relationships.device.data.id;
+                    li.textContent = 'ID do Dispositivo: ' + deviceId + ', Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationData.latitude + ', Longitude: ' + locationData.longitude;
                     ul.appendChild(li);
                 });
                 listaDispositivos.appendChild(ul);
@@ -71,6 +74,7 @@
     </script>
 </body>
 </html>
+
 
 
 
