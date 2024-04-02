@@ -45,11 +45,17 @@
     var listaDispositivos = document.getElementById('listaDispositivos');
     listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-    if (Array.isArray(dispositivos)) {
+    if (Array.isArray(dispositivos) && dispositivos.length > 0) {
         var ul = document.createElement('ul');
         dispositivos.forEach(function(dispositivo) {
             var li = document.createElement('li');
-            li.textContent = 'ID do Dispositivo: ' + dispositivo.device_id + ', Nível do Sinal: ' + dispositivo.signal_strength;
+            if (dispositivo.id !== undefined) {
+                li.textContent = 'ID do Dispositivo: ' + dispositivo.id + ', Nível do Sinal: ' + dispositivo.signal_strength;
+            } else if (dispositivo.identifier !== undefined) {
+                li.textContent = 'Identificador do Dispositivo: ' + dispositivo.identifier + ', Nível do Sinal: ' + dispositivo.signal_strength;
+            } else {
+                li.textContent = 'Dispositivo sem identificador válido.';
+            }
             ul.appendChild(li);
         });
         listaDispositivos.appendChild(ul);
@@ -59,6 +65,8 @@
         listaDispositivos.appendChild(p);
     }
 }
+
+
 
 
         function exibirErro(mensagem) {
