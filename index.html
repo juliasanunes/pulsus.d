@@ -45,23 +45,25 @@
     var listaDispositivos = document.getElementById('listaDispositivos');
     listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-    // Verifica se a resposta contém dados sobre os dispositivos
+    // Verifica se a resposta contém dados sobre a força do sinal
     if (response && response.data && response.data.length > 0) {
         var ul = document.createElement('ul');
         response.data.forEach(function(data) {
             var li = document.createElement('li');
-            var attributes = data.attributes;
-            var relationships = data.relationships;
-            if (relationships && relationships.location && relationships.location.data) {
-                var locationData = relationships.location.data;
-                var locationAttributes = locationData.attributes;
-                if (locationAttributes && locationAttributes.latitude && locationAttributes.longitude) {
-                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationAttributes.latitude + ', Longitude: ' + locationAttributes.longitude;
+            if (data.type === 'signal_strength') {
+                var signalStrength = data.attributes;
+                li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
+            } else if (data.type === 'location' && data.relationships && data.relationships.location && data.relationships.location.data) {
+                var location = data.relationships.location.data;
+                // Verifica se os dados de localização estão presentes
+                if (location.attributes && location.attributes.latitude && location.attributes.longitude) {
+                    li.textContent = 'Latitude: ' + location.attributes.latitude + ', Longitude: ' + location.attributes.longitude;
                 } else {
-                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude e longitude não disponíveis';
+                    li.textContent = 'Dados de localização indisponíveis';
                 }
-            } else {
-                li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Localização não disponível';
+            } else if (data.type === 'device') {
+                var device = data.attributes;
+                li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
             }
             ul.appendChild(li);
         });
