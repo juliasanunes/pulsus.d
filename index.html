@@ -43,31 +43,37 @@
         }
 
         function exibirDispositivos(response) {
-            var listaDispositivos = document.getElementById('listaDispositivos');
-            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+    var listaDispositivos = document.getElementById('listaDispositivos');
+    listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-            // Verifica se a resposta contém dados sobre a força do sinal
-            if (response && response.data && response.data.length > 0) {
-                var ul = document.createElement('ul');
-                response.data.forEach(function(data) {
-                    var li = document.createElement('li');
-                    if (data.type === 'signal_strength') {
-                        var signalStrength = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
-                        li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
-                    } else if (data.type === 'location') {
-                        var location = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
-                        li.textContent = 'Latitude: ' + location.latitude + ', Longitude: ' + location.longitude + ', Acurácia: ' + location.accuracy + ', Data de Registro: ' + location.recorded_at;
-                    } else if (data.type === 'device') {
-                        var device = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
-                        li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
-                    }
-                    ul.appendChild(li);
-                });
-                listaDispositivos.appendChild(ul);
-            } else {
-                exibirErro('Nenhum dado disponível.');
+    // Verifica se a resposta contém dados sobre a força do sinal
+    if (response && response.data && response.data.length > 0) {
+        var ul = document.createElement('ul');
+        response.data.forEach(function(data) {
+            var li = document.createElement('li');
+            if (data.type === 'signal_strength') {
+                var signalStrength = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
+                if (signalStrength) { // Verifica se signalStrength está definido
+                    li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
+                } else {
+                    console.error('Erro: Força do sinal não definida.');
+                    return; // Sai da iteração atual se signalStrength não estiver definido
+                }
+            } else if (data.type === 'location') {
+                var location = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
+                li.textContent = 'Latitude: ' + location.latitude + ', Longitude: ' + location.longitude + ', Acurácia: ' + location.accuracy + ', Data de Registro: ' + location.recorded_at;
+            } else if (data.type === 'device') {
+                var device = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
+                li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
             }
-        }
+            ul.appendChild(li);
+        });
+        listaDispositivos.appendChild(ul);
+    } else {
+        exibirErro('Nenhum dado disponível.');
+    }
+}
+
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
