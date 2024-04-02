@@ -3,56 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listagem de Dispositivos - API da Pulsus</title>
+    <title>Exemplo de Requisição para API de Força do Sinal</title>
 </head>
 <body>
-    <h1>Listagem de Dispositivos</h1>
-    <button onclick="listarDispositivos()">Listar Dispositivos</button>
-    <div id="listaDispositivos"></div>
+    <h1>Exemplo de Requisição para API de Força do Sinal</h1>
+    <button onclick="buscarDados()">Buscar Dados</button>
+    <div id="dados"></div>
 
     <script>
-        function listarDispositivos() {
-            var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de';
-            // URL original da API
-            var url = 'https://api.pulsus.mobi/v1/devices?since_id=1&max_id=120&ids=%5B671%2C673%5D&extended_format=true';
+        function buscarDados() {
+            var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Substitua pelo seu token de API válido
 
-            // Utilizando um proxy CORS para contornar o problema de CORS
-            // Certifique-se de verificar a confiabilidade e a segurança de qualquer proxy CORS utilizado.
-            var corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            var proxiedUrl = corsProxy + url;
+            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=500&device_id=1'; // Substitua pela URL correta do endpoint
+            var queryParams = '?page=1&per_page=500&device_id=1'; // Substitua os parâmetros conforme necessário
 
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         var response = JSON.parse(xhr.responseText);
-                        exibirDispositivos(response);
+                        exibirDados(response);
+                    } else if (xhr.status === 401) {
+                        exibirErro('Erro: Token inválido. Por favor, verifique seu token de API.');
+                    } else if (xhr.status === 404) {
+                        exibirErro('Erro: Recurso não encontrado.');
                     } else {
-                        document.getElementById('listaDispositivos').innerText = 'Erro ao listar dispositivos';
+                        exibirErro('Erro interno do servidor. Por favor, tente novamente mais tarde.');
                     }
                 }
             };
 
-            xhr.open('GET', proxiedUrl, true);
-            // A linha abaixo adiciona o token da API ao header da requisição.
-            // É possível que você precise ajustar isso dependendo de como o serviço de proxy lida com headers.
+            xhr.open('GET', endpoint + queryParams, true);
             xhr.setRequestHeader('ApiToken', apiToken);
-            // Alguns proxies podem exigir o uso de headers adicionais para funcionar corretamente.
             xhr.send();
         }
 
-        function exibirDispositivos(dispositivos) {
-            var listaDispositivos = document.getElementById('listaDispositivos');
-            listaDispositivos.innerHTML = '';
+        function exibirDados(dados) {
+            var divDados = document.getElementById('dados');
+            divDados.innerHTML = ''; // Limpa o conteúdo anterior
 
             var ul = document.createElement('ul');
-            dispositivos.forEach(function(dispositivo) {
+            dados.forEach(function(item) {
                 var li = document.createElement('li');
-                li.textContent = 'ID: ' + dispositivo.id + ', Modelo: ' + dispositivo.modelo;
+                li.textContent = 'ID do Dispositivo: ' + item.device_id + ', Nível do Sinal: ' + item.signal_strength;
                 ul.appendChild(li);
             });
 
-            listaDispositivos.appendChild(ul);
+            divDados.appendChild(ul);
+        }
+
+        function exibirErro(mensagem) {
+            var divDados = document.getElementById('dados');
+            divDados.innerHTML = ''; // Limpa o conteúdo anterior
+
+            var p = document.createElement('p');
+            p.textContent = mensagem;
+            divDados.appendChild(p);
         }
     </script>
 </body>
