@@ -12,10 +12,10 @@
 
     <script>
         function listarDispositivos() {
-            var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Substitua pelo seu token de API válido
+            var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Seu token de API
             var proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL do proxy CORS
 
-            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=500&device_id=1'; // Endpoint da API
+            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths'; // Endpoint da API
             var queryParams = '?page=1&per_page=500&device_id=1'; // Parâmetros da requisição
 
             var url = proxyUrl + endpoint + queryParams;
@@ -38,6 +38,7 @@
 
             xhr.open('GET', url, true);
             xhr.setRequestHeader('ApiToken', apiToken);
+            xhr.setRequestHeader('accept', 'application/json'); // Define o cabeçalho Accept
             xhr.send();
         }
 
@@ -45,7 +46,6 @@
             var listaDispositivos = document.getElementById('listaDispositivos');
             listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-            // Verifica se a resposta contém dados sobre a força do sinal
             if (response && response.data && response.data.length > 0) {
                 var ul = document.createElement('ul');
                 response.data.forEach(function(data) {
@@ -59,17 +59,6 @@
                     } else if (data.type === 'device') {
                         var device = data.attributes;
                         li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
-                    }
-                    // Verifica se há relacionamentos para incluir informações adicionais
-                    if (data.relationships && data.relationships.location && response.included) {
-                        var locationId = data.relationships.location.data.id;
-                        var includedLocation = response.included.find(function(item) {
-                            return item.id == locationId && item.type == 'location';
-                        });
-                        if (includedLocation) {
-                            var locationAttributes = includedLocation.attributes;
-                            li.textContent += ', Localização: Latitude ' + locationAttributes.latitude + ', Longitude ' + locationAttributes.longitude;
-                        }
                     }
                     ul.appendChild(li);
                 });
