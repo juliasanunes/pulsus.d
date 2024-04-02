@@ -59,21 +59,13 @@
                 li.textContent = 'Latitude: ' + location.latitude + ', Longitude: ' + location.longitude + ', Acurácia: ' + location.accuracy + ', Data de Registro: ' + location.recorded_at;
             } else if (data.type === 'device') {
                 var device = data.attribute; // Corrigido para 'attribute' em vez de 'attributes'
-                li.textContent = 'ID do Dispositivo: ' + device.id + ', Identificador: ' + device.identifier;
-            }
-            ul.appendChild(li);
+            
         });
         listaDispositivos.appendChild(ul);
-
     } else {
         exibirErro('Nenhum dado disponível.');
     }
-
-
-    } else {
-        exibirErro('Nenhum dado disponível.');
-    }
-
+}
 
 
         function exibirErro(mensagem) {
