@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +14,7 @@
             var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Seu token de API
             var proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL do proxy CORS
 
-            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=500'; // Endpoint da API
+            var endpoint = 'https://api.pulsus.mobi/v2/signal_strengths?page=1&per_page=600&device_id'; // Endpoint da API
 
             var url = proxyUrl + endpoint;
 
@@ -42,31 +41,23 @@
         }
 
         function exibirDispositivos(response) {
-    var listaDispositivos = document.getElementById('listaDispositivos');
-    listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+            var listaDispositivos = document.getElementById('listaDispositivos');
+            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-    // Verifica se a resposta contém dados sobre a força do sinal
-    if (response && response.data && response.data.length > 0) {
-        var ul = document.createElement('ul');
-        response.data.forEach(function(data) {
-            var li = document.createElement('li');
-            if (data.type === 'signal_strength') {
-                var signalStrength = data.attributes; // Acessa os atributos do objeto de força do sinal
-                li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
-            } else if (data.type === 'location') {
-                var location = data.attributes; // Acessa os atributos do objeto de localização
-                li.textContent = 'Latitude: ' + location.latitude + ', Longitude: ' + location.longitude + ', Acurácia: ' + location.accuracy + ', Data de Registro: ' + location.recorded_at;
+            // Verifica se a resposta contém dados sobre os dispositivos
+            if (response && response.data && response.data.length > 0) {
+                var ul = document.createElement('ul');
+                response.data.forEach(function(data) {
+                    var li = document.createElement('li');
+                    var attributes = data.attributes;
+                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength;
+                    ul.appendChild(li);
+                });
+                listaDispositivos.appendChild(ul);
+            } else {
+                exibirErro('Nenhum dado disponível.');
             }
-            ul.appendChild(li);
-        });
-        listaDispositivos.appendChild(ul);
-    } else {
-        exibirErro('Nenhum dado disponível.');
-    }
-}
-
-
-
+        }
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
