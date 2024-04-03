@@ -15,8 +15,7 @@
             var apiToken = 'SFWLzKwTcwfgZ9P6dCxPuXmHhXWiRDCm2KtsCWztDovBj7bAJMRPqHmcs4de'; // Seu token de API
             var proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // URL do proxy CORS
 
-            var endpoint = 'https://api.pulsus.mobi/v1/signal_strengths?since_id=1&max_id=120'; // Endpoint da API
-
+            var endpoint = 'https://api.pulsus.mobi/v1/signal_strengths?since_id=1&max_id=120'; // Novo endpoint da API
 
             var url = proxyUrl + endpoint;
 
@@ -43,35 +42,25 @@
         }
 
         function exibirDispositivos(response) {
-    var listaDispositivos = document.getElementById('listaDispositivos');
-    listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
+            var listaDispositivos = document.getElementById('listaDispositivos');
+            listaDispositivos.innerHTML = ''; // Limpa o conteúdo anterior
 
-    // Verifica se a resposta contém dados sobre os dispositivos
-    if (response && response.data && response.data.length > 0) {
-        var ul = document.createElement('ul');
-        response.data.forEach(function(data) {
-            var li = document.createElement('li');
-            var attributes = data.attributes;
-            var relationships = data.relationships;
-            if (relationships && relationships.location && relationships.location.data) {
-                var locationData = relationships.location.data;
-                var locationAttributes = locationData.attributes;
-                if (locationAttributes && locationAttributes.latitude && locationAttributes.longitude) {
-                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude: ' + locationAttributes.latitude + ', Longitude: ' + locationAttributes.longitude;
-                } else {
-                    li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Latitude e longitude não disponíveis';
-                }
+            // Verifica se a resposta contém dados sobre a força do sinal
+            if (response && response.data && response.data.length > 0) {
+                var ul = document.createElement('ul');
+                response.data.forEach(function(data) {
+                    var li = document.createElement('li');
+                    if (data.type === 'signal_strength') {
+                        var signalStrength = data.attributes;
+                        li.textContent = 'Força do Sinal: ' + signalStrength.strength + ', Operadora: ' + signalStrength.operator + ', Tipo de Rede: ' + signalStrength.network_type;
+                    }
+                    ul.appendChild(li);
+                });
+                listaDispositivos.appendChild(ul);
             } else {
-                li.textContent = 'Operadora: ' + attributes.operator + ', Tipo de Rede: ' + attributes.network_type + ', Força do Sinal: ' + attributes.strength + ', Localização não disponível';
+                exibirErro('Nenhum dado disponível.');
             }
-            ul.appendChild(li);
-        });
-        listaDispositivos.appendChild(ul);
-    } else {
-        exibirErro('Nenhum dado disponível.');
-    }
-}
-
+        }
 
         function exibirErro(mensagem) {
             var listaDispositivos = document.getElementById('listaDispositivos');
@@ -84,6 +73,7 @@
     </script>
 </body>
 </html>
+
 
 
 
